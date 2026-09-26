@@ -1,0 +1,15 @@
+{
+  "name": "careerorbitai",
+  "private": true,
+  "version": "2.0.0",
+  "description": "CareerOrbitAI - AI-driven Talent Acquisition Platform",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint",
+    "preview": "npm --prefix frontend run preview",
+    "dev:backend": "python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "test:backend": "python -m pytest backend/tests -v",
+    "seed": "python backend/scripts/reset_and_seed_demo.py"
+  }
+}

@@ -43,5 +43,10 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
+*.db-journal
 storage/
+backups/
+*.backup
+scratch/
+
 
