@@ -70,3 +70,16 @@ def test_interviews_show_only_booked_records_for_current_org(client, db_session,
     assert data['total'] == 1
     assert data['items'][0]['candidate_name'] == 'Interview candidate'
     assert client.get('/api/workspace/overview').json()['metrics']['interviews'] == 1
+
+
+def test_upcoming_interviews_exclude_past_and_sort_nearest_first(client, db_session, test_user, test_job):
+    candidate = make_candidate(db_session, test_user.organization_id, 'upcoming-person', 'Upcoming candidate')
+    now = datetime.now(timezone.utc)
+    for key, days in [('past', -1), ('later', 3), ('next', 1)]:
+        start = now + timedelta(days=days)
+        db_session.add(InterviewSlot(id=key, organization_id=test_user.organization_id, job_id=test_job.id, interviewer_name='Interviewer', interviewer_email='hr@example.com', start_time=start, end_time=start + timedelta(hours=1), is_booked=True, booked_candidate_id=candidate.id))
+    db_session.commit()
+    data = client.get('/api/workspace/interviews?upcoming=true&size=1').json()
+    assert data['total'] == 2
+    assert [row['id'] for row in data['items']] == ['next']
+    assert client.get('/api/workspace/interviews?upcoming=true&size=1&page=2').json()['items'][0]['id'] == 'later'

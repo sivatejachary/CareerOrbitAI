@@ -26,3 +26,9 @@ export function StatusBadge({ value }: { value: string }) {
   const label = value.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
   return <span className={`status-badge status-${tone}`}>{label}</span>;
 }
+
+export function PersonAvatar({ name }: { name: string }) {
+  const initials = name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+  const tone = [...name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % 4;
+  return <span className={`person-avatar avatar-${tone}`} aria-hidden="true">{initials || '?'}</span>;
+}

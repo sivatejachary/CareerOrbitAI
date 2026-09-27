@@ -119,7 +119,7 @@ export const JobsList: React.FC = () => {
 
   return (
     <div className="workspace-page">
-      <PageHeading title="Jobs" description="Manage open roles, application forms and the hiring workflow for each position." />
+      <PageHeading title="Find your next great hire." description="Create opportunities, connect with talent and build your team." />
       {/* Content Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Search & Filters */}
@@ -236,10 +236,10 @@ export const JobsList: React.FC = () => {
         )
       ) : (
         /* Loaded Jobs Table & Cards */
-        <div className="bg-surface border border-border-subtle rounded-menu overflow-hidden">
+        <div className="ui-panel">
           {/* Desktop Table View (>= 768px) */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="ui-table">
               <thead>
                 <tr className="bg-workspace border-b border-border-subtle text-xs font-semibold text-text-secondary uppercase tracking-wider">
                   <th className="py-3.5 px-4">Job Title & Code</th>
@@ -260,8 +260,8 @@ export const JobsList: React.FC = () => {
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
                     <td className="py-3.5 px-4">
-                      <Link to={`/jobs/${job.id}`} className="font-semibold text-interactive-blue">{job.title}</Link>
-                      <div className="text-xs text-text-secondary font-mono">
+                      <div className="flex items-center gap-3"><span className="metric-icon tone-sage"><Briefcase size={17} /></span><Link to={`/jobs/${job.id}`} className="font-semibold text-text-primary">{job.title}</Link></div>
+                      <div className="text-[10px] text-text-secondary mt-2">
                         {job.job_code}
                       </div>
                     </td>
@@ -318,7 +318,7 @@ export const JobsList: React.FC = () => {
                     <h4 className="font-semibold text-text-primary text-base">
                       <Link to={`/jobs/${job.id}`}>{job.title}</Link>
                     </h4>
-                    <span className="text-xs text-text-secondary font-mono">
+                    <span className="text-[10px] text-text-secondary mt-2">
                       {job.job_code}
                     </span>
                   </div>

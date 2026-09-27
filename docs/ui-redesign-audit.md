@@ -63,3 +63,13 @@ The historical audit report is not current verification evidence.
 
 Live outbound calls, messages and calendar invitations must not be sent as tests.
 Use isolated test databases and mocked providers; report external verification gaps.
+
+
+## Professional visual refinement — September 27, 2026
+
+- Introduced a charcoal and emerald visual identity, an original orbital brand mark, warm surfaces, and locally bundled Inter and Manrope variable fonts.
+- Reorganized the dashboard around four primary hiring metrics, application distribution, upcoming interviews, activity, and actionable recruiter tasks. All metrics still come from organization-scoped APIs.
+- Added candidate search to the header (Enter to search, Control/Command+K to focus), candidate initials, refined table typography, and responsive sidebar navigation.
+- Added the optional `upcoming` interview query with ascending date order and pagination, covered by a regression test for past-date exclusion and nearest-first results.
+- Verification: production build passed; lint completed with existing warnings; six workspace API tests passed. Browser checks passed on dashboard, candidates, jobs, AI calling, workflows, interviews, and settings at 1440px and 390px. No horizontal overflow or page errors were observed. Candidate search and mobile navigation/Escape were exercised.
+- Screenshots use isolated synthetic preview records. Live calling and meeting integrations were not invoked.

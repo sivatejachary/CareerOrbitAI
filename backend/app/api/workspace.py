@@ -55,10 +55,12 @@ def overview(db: Session = Depends(get_db), user: User = Depends(get_current_use
 
 
 @router.get("/interviews")
-def interviews(page: int = Query(1, ge=1), size: int = Query(20, ge=1, le=100), db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def interviews(page: int = Query(1, ge=1), size: int = Query(20, ge=1, le=100), upcoming: bool = False, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     query = db.query(InterviewSlot).filter(InterviewSlot.organization_id == user.organization_id, InterviewSlot.is_booked.is_(True))
+    if upcoming:
+        query = query.filter(InterviewSlot.start_time >= datetime.now(timezone.utc))
     total = query.count()
-    rows = query.order_by(InterviewSlot.start_time.desc()).offset((page - 1) * size).limit(size).all()
+    rows = query.order_by(InterviewSlot.start_time.asc() if upcoming else InterviewSlot.start_time.desc()).offset((page - 1) * size).limit(size).all()
     return {'total': total, 'items': [{
         'id': s.id, 'candidate_id': s.booked_candidate_id,
         'candidate_name': s.booked_candidate.full_name if s.booked_candidate else None,

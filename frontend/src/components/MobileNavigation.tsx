@@ -101,6 +101,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
       {/* Slide-out Drawer */}
       <div
         ref={drawerRef}
+        id="mobile-navigation-drawer"
         className="relative z-10 w-[min(288px,calc(100vw-32px))] bg-sidebar h-full shadow-drawer flex flex-col justify-between"
       >
         {/* Close Button Header Bar */}
@@ -110,7 +111,7 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close navigation menu"
-            className="w-11 h-11 flex items-center justify-center rounded-item text-text-secondary hover:text-text-primary hover:bg-nav-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-blue transition-colors"
+            className="w-11 h-11 flex items-center justify-center rounded-item text-white/80 hover:text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive-blue transition-colors"
           >
             <X className="w-5 h-5" aria-hidden="true" />
           </button>
