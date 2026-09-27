@@ -1,3 +1,4 @@
+import { PageHeading } from '../ui/Workspace';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -117,7 +118,8 @@ export const JobsList: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1280px] mx-auto space-y-6">
+    <div className="workspace-page">
+      <PageHeading title="Jobs" description="Manage open roles, application forms and the hiring workflow for each position." />
       {/* Content Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Search & Filters */}
@@ -129,6 +131,7 @@ export const JobsList: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
+              aria-label="Search jobs"
               placeholder="Search by title, job code, or department..."
               className="w-full pl-9 pr-3.5 py-2 text-sm bg-surface border border-border-subtle rounded-item focus:ring-2 focus:ring-interactive-blue focus:border-interactive-blue focus:outline-none transition-colors"
             />
@@ -202,6 +205,7 @@ export const JobsList: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                setPage(1);
                 setSearchQuery('');
                 setStatusFilter('All');
                 updateUrlParams('', 'All', 1);
@@ -256,9 +260,7 @@ export const JobsList: React.FC = () => {
                     onClick={() => navigate(`/jobs/${job.id}`)}
                   >
                     <td className="py-3.5 px-4">
-                      <div className="font-semibold text-text-primary group-hover:text-interactive-blue transition-colors">
-                        {job.title}
-                      </div>
+                      <Link to={`/jobs/${job.id}`} className="font-semibold text-interactive-blue">{job.title}</Link>
                       <div className="text-xs text-text-secondary font-mono">
                         {job.job_code}
                       </div>
@@ -314,7 +316,7 @@ export const JobsList: React.FC = () => {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-semibold text-text-primary text-base">
-                      {job.title}
+                      <Link to={`/jobs/${job.id}`}>{job.title}</Link>
                     </h4>
                     <span className="text-xs text-text-secondary font-mono">
                       {job.job_code}

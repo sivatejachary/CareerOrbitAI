@@ -20,6 +20,7 @@ def list_candidates(
     search: Optional[str] = Query(None, description="Search by name, email, or candidate code"),
     skill: Optional[str] = Query(None, description="Filter by skill"),
     min_experience: Optional[float] = Query(None, description="Filter by min total experience"),
+    sort: str = Query("newest", pattern="^(newest|name)$"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     current_user: User = Depends(get_current_user),
@@ -45,7 +46,7 @@ def list_candidates(
         query = query.filter(Candidate.total_experience >= min_experience)
 
     total_count = query.count()
-    candidates = query.order_by(Candidate.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    candidates = query.order_by(Candidate.full_name.asc() if sort == "name" else Candidate.created_at.desc(), Candidate.id.asc()).offset((page - 1) * page_size).limit(page_size).all()
 
     items = []
     for c in candidates:

@@ -68,3 +68,6 @@ def health_check():
         "app": settings.PROJECT_NAME,
         "version": settings.VERSION
     }
+
+from backend.app.api import workspace
+app.include_router(workspace.router, prefix=settings.API_PREFIX)

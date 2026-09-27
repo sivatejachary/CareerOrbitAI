@@ -47,15 +47,15 @@ const getNodeIcon = (type: WorkflowNodeType, _purpose?: string) => {
     case 'APPLICATION_RECEIVED':
       return <FileText className="w-5 h-5 text-emerald-600" />;
     case 'AI_RESUME_SCREENING':
-      return <Sparkles className="w-5 h-5 text-[#245FAD]" />;
+      return <Sparkles className="w-5 h-5 text-interactive-blue" />;
     case 'HR_REVIEW':
       return <UserCheck className="w-5 h-5 text-slate-700" />;
     case 'INTERVIEW':
-      return <CalendarCheck className="w-5 h-5 text-[#245FAD]" />;
+      return <CalendarCheck className="w-5 h-5 text-interactive-blue" />;
     case 'ASSESSMENT':
       return <Code2 className="w-5 h-5 text-slate-700" />;
     case 'AI_CALLING':
-      return <PhoneCall className="w-5 h-5 text-[#245FAD]" />;
+      return <PhoneCall className="w-5 h-5 text-interactive-blue" />;
     case 'CANDIDATE_AVAILABILITY':
     case 'SCHEDULE_INTERVIEW':
       return <CalendarCheck className="w-5 h-5 text-slate-700" />;
@@ -144,6 +144,7 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
   onDeleteStep,
   onAddStepAtIndex
 }) => {
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
   const [openMoreMenuId, setOpenMoreMenuId] = useState<string | null>(null);
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('');
@@ -154,9 +155,9 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
   };
 
   return (
-    <main
+    <section
       aria-label="Workflow Sequence"
-      className="flex-1 bg-[#F6F8FB] overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center custom-scrollbar"
+      className="flex-1 bg-workspace overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center custom-scrollbar"
     >
       {/* Screen Reader Live Region */}
       <div className="sr-only" aria-live="polite">
@@ -165,6 +166,7 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
 
       {/* Centered Column: approximately 680-800px wide */}
       <div className="w-full max-w-[760px] pb-16">
+        <p id="workflow-reorder-help" className="text-xs text-text-secondary mb-5">Drag steps to reorder. With a step focused, use Alt + ↑ or ↓. Start and end stay in place.</p>
         {/* Step Sequence List */}
         <div className="space-y-0">
           {steps.map((step, index) => {
@@ -183,17 +185,18 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                   <div
                     tabIndex={0}
                     role="button"
-                    aria-selected={isSelected}
+                    aria-pressed={isSelected}
+                    onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelectStep(step.id); } }}
                     onClick={() => onSelectStep(step.id)}
                     className={`w-full text-left p-3.5 sm:p-4 rounded-xl border bg-white transition-all shadow-xs cursor-pointer ${
                       isSelected
-                        ? 'border-[#245FAD] ring-1 ring-[#245FAD]/25'
-                        : 'border-[#DDE4EB] hover:border-[#5B6C7D]/30'
+                        ? 'border-interactive-blue ring-1 ring-interactive-blue/25'
+                        : 'border-border-subtle hover:border-text-secondary/30'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-7 h-7 rounded-lg bg-[#F6F8FB] border border-[#DDE4EB] text-[#192D42] text-xs font-bold flex items-center justify-center shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-workspace border border-border-subtle text-text-primary text-xs font-bold flex items-center justify-center shrink-0">
                           1
                         </div>
                         <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 shrink-0">
@@ -201,14 +204,14 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs sm:text-sm font-bold text-[#192D42]">
+                            <span className="text-xs sm:text-sm font-bold text-text-primary">
                               Candidate applies
                             </span>
                             <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
                               Intake
                             </span>
                           </div>
-                          <p className="text-xs text-[#5B6C7D] mt-0.5 truncate">
+                          <p className="text-xs text-text-secondary mt-0.5 truncate">
                             CareerOrbitAI form or connected Google Form
                           </p>
                         </div>
@@ -218,17 +221,17 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
 
                   {/* Connector Line & "Add step" button */}
                   <div className="flex flex-col items-center py-2.5">
-                    <div className="w-0.5 h-3 bg-[#DDE4EB]" />
+                    <div className="w-0.5 h-3 bg-border-subtle" />
                     <button
                       type="button"
                       onClick={() => setActiveMenuIndex(index + 1)}
-                      className="my-0.5 px-3 py-1 rounded-full bg-white border border-[#DDE4EB] hover:border-[#245FAD] hover:text-[#245FAD] text-[#5B6C7D] text-xs font-medium flex items-center gap-1.5 shadow-2xs hover:shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-[#245FAD]/30"
+                      className="my-0.5 px-3 py-1 rounded-full bg-white border border-border-subtle hover:border-interactive-blue hover:text-interactive-blue text-text-secondary text-xs font-medium flex items-center gap-1.5 shadow-2xs hover:shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-interactive-blue/30"
                       title="Add step"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add step</span>
                     </button>
-                    <div className="w-0.5 h-3 bg-[#DDE4EB]" />
+                    <div className="w-0.5 h-3 bg-border-subtle" />
                   </div>
                 </React.Fragment>
               );
@@ -240,11 +243,17 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                 {/* Step Card Container */}
                 <div
                   tabIndex={0}
-                  role="button"
-                  aria-selected={isSelected}
+                  role="group"
+                  draggable={!isEnd}
+                  onDragStart={event => { if (isEnd) return; setDragIndex(index); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', step.id); }}
+                  onDragOver={event => { if (!isEnd && dragIndex !== null) { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; } }}
+                  onDrop={event => { event.preventDefault(); if (dragIndex !== null && !isEnd && dragIndex !== index) { onMoveStep(dragIndex, index); announce(`Moved ${steps[dragIndex].title} to step ${index + 1}`); } setDragIndex(null); }}
+                  onDragEnd={() => setDragIndex(null)}
                   aria-label={`Step ${index + 1}: ${step.title}`}
+                  aria-describedby="workflow-reorder-help"
                   onClick={() => onSelectStep(step.id)}
                   onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget) return;
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
                       onSelectStep(step.id);
@@ -264,24 +273,24 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                   }}
                   className={`w-full text-left p-3.5 sm:p-4 rounded-xl border bg-white transition-all shadow-xs cursor-pointer ${
                     isSelected
-                      ? 'border-[#245FAD] ring-1 ring-[#245FAD]/25'
-                      : 'border-[#DDE4EB] hover:border-[#5B6C7D]/30'
+                      ? 'border-interactive-blue ring-1 ring-interactive-blue/25'
+                      : 'border-border-subtle hover:border-text-secondary/30'
                   } ${hasError ? 'border-amber-300 bg-amber-50/15' : ''}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     {/* Left: Step Number, Lucide Icon, Name, and One-line Summary */}
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="w-7 h-7 rounded-lg bg-[#F6F8FB] border border-[#DDE4EB] text-[#192D42] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-7 h-7 rounded-lg bg-workspace border border-border-subtle text-text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                         {index + 1}
                       </div>
 
-                      <div className="p-1.5 rounded-lg bg-[#F6F8FB] border border-[#DDE4EB] shrink-0 mt-0.5">
+                      <div className="p-1.5 rounded-lg bg-workspace border border-border-subtle shrink-0 mt-0.5">
                         {getNodeIcon(step.type, step.config?.purpose)}
                       </div>
 
                       <div className="min-w-0 space-y-0.5">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-xs sm:text-sm font-bold text-[#192D42] tracking-tight">
+                          <span className="text-xs sm:text-sm font-bold text-text-primary tracking-tight">
                             {step.title}
                           </span>
 
@@ -295,7 +304,7 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                         </div>
 
                         {/* One concise line configuration summary */}
-                        <p className="text-xs text-[#5B6C7D] leading-relaxed">
+                        <p className="text-xs text-text-secondary leading-relaxed">
                           {getOneLineSummary(step)}
                         </p>
                       </div>
@@ -309,7 +318,7 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                       <button
                         type="button"
                         onClick={() => setOpenMoreMenuId(openMoreMenuId === step.id ? null : step.id)}
-                        className="p-1 rounded-md text-[#5B6C7D] hover:text-[#192D42] hover:bg-[#F6F8FB] transition-colors"
+                        className="p-1 rounded-md text-text-secondary hover:text-text-primary hover:bg-workspace transition-colors"
                         title="Step options"
                       >
                         <MoreVertical className="w-4 h-4" />
@@ -317,15 +326,15 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
 
                       {openMoreMenuId === step.id && (
                         <div
-                          className="absolute right-0 mt-1 w-44 bg-white border border-[#DDE4EB] rounded-lg shadow-lg py-1 z-30 text-xs text-[#192D42] animate-in fade-in duration-75"
+                          className="absolute right-0 mt-1 w-44 bg-white border border-border-subtle rounded-lg shadow-lg py-1 z-30 text-xs text-text-primary animate-in fade-in duration-75"
                           onClick={() => setOpenMoreMenuId(null)}
                         >
                           <button
                             type="button"
                             onClick={() => onSelectStep(step.id)}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#F6F8FB] flex items-center gap-2"
+                            className="w-full text-left px-3 py-1.5 hover:bg-workspace flex items-center gap-2"
                           >
-                            <Settings className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                            <Settings className="w-3.5 h-3.5 text-text-secondary" />
                             <span>Configure step</span>
                           </button>
 
@@ -336,9 +345,9 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                               onMoveStep(index, index - 1);
                               announce(`Moved ${step.title} earlier`);
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#F6F8FB] flex items-center gap-2 disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="w-full text-left px-3 py-1.5 hover:bg-workspace flex items-center gap-2 disabled:opacity-30 disabled:hover:bg-transparent"
                           >
-                            <ChevronUp className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                            <ChevronUp className="w-3.5 h-3.5 text-text-secondary" />
                             <span>Move earlier</span>
                           </button>
 
@@ -349,9 +358,9 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                               onMoveStep(index, index + 1);
                               announce(`Moved ${step.title} later`);
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#F6F8FB] flex items-center gap-2 disabled:opacity-30 disabled:hover:bg-transparent"
+                            className="w-full text-left px-3 py-1.5 hover:bg-workspace flex items-center gap-2 disabled:opacity-30 disabled:hover:bg-transparent"
                           >
-                            <ChevronDown className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                            <ChevronDown className="w-3.5 h-3.5 text-text-secondary" />
                             <span>Move later</span>
                           </button>
 
@@ -362,15 +371,15 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                                 onDuplicateStep(step.id);
                                 announce(`Duplicated ${step.title}`);
                               }}
-                              className="w-full text-left px-3 py-1.5 hover:bg-[#F6F8FB] flex items-center gap-2"
+                              className="w-full text-left px-3 py-1.5 hover:bg-workspace flex items-center gap-2"
                             >
-                              <Copy className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                              <Copy className="w-3.5 h-3.5 text-text-secondary" />
                               <span>Duplicate step</span>
                             </button>
                           )}
 
                           {!isEnd && (
-                            <div className="pt-1 mt-1 border-t border-[#DDE4EB]">
+                            <div className="pt-1 mt-1 border-t border-border-subtle">
                               <button
                                 type="button"
                                 onClick={() => {
@@ -393,34 +402,34 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
 
                   {/* ================= READABLE CONDITION SECTION ================= */}
                   {step.type === 'CONDITION' && (
-                    <div className="mt-3 pt-3 border-t border-[#DDE4EB] space-y-2">
+                    <div className="mt-3 pt-3 border-t border-border-subtle space-y-2">
                       <div className="bg-[#F8FAFC] rounded-lg p-3 border border-[#E2E8F0] space-y-2.5 text-xs">
                         {/* Primary Condition Branch */}
                         <div className="space-y-1">
-                          <div className="font-semibold text-[#192D42] flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-[#245FAD]" />
+                          <div className="font-semibold text-text-primary flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-interactive-blue" />
                             <span>If candidate meets shortlist policy:</span>
                           </div>
-                          <div className="pl-4 text-[#5B6C7D] flex items-center gap-1.5">
-                            <ArrowRight className="w-3 h-3 text-[#245FAD]" />
+                          <div className="pl-4 text-text-secondary flex items-center gap-1.5">
+                            <ArrowRight className="w-3 h-3 text-interactive-blue" />
                             <span>Continue with initial AI call</span>
                           </div>
                         </div>
 
                         {/* Fallback Branch */}
                         <div className="space-y-1 pt-2 border-t border-[#E2E8F0]">
-                          <div className="font-semibold text-[#192D42] flex items-center gap-1.5">
+                          <div className="font-semibold text-text-primary flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-slate-400" />
                             <span>Otherwise:</span>
                           </div>
-                          <div className="pl-4 text-[#5B6C7D] flex items-center gap-1.5">
+                          <div className="pl-4 text-text-secondary flex items-center gap-1.5">
                             <ArrowRight className="w-3 h-3 text-slate-500" />
                             <span>Send to recruiter review</span>
                           </div>
                         </div>
 
                         {/* Path Continuity */}
-                        <div className="pt-2 border-t border-[#E2E8F0] text-[11px] text-[#5B6C7D] italic">
+                        <div className="pt-2 border-t border-[#E2E8F0] text-[11px] text-text-secondary italic">
                           ↳ Both paths continue forward to the next evaluation round.
                         </div>
                       </div>
@@ -431,17 +440,17 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
                 {/* Connector Line & "Add step" button between cards */}
                 {index < steps.length - 1 && (
                   <div className="flex flex-col items-center py-2.5">
-                    <div className="w-0.5 h-3 bg-[#DDE4EB]" />
+                    <div className="w-0.5 h-3 bg-border-subtle" />
                     <button
                       type="button"
                       onClick={() => setActiveMenuIndex(index + 1)}
-                      className="my-0.5 px-3 py-1 rounded-full bg-white border border-[#DDE4EB] hover:border-[#245FAD] hover:text-[#245FAD] text-[#5B6C7D] text-xs font-medium flex items-center gap-1.5 shadow-2xs hover:shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-[#245FAD]/30"
+                      className="my-0.5 px-3 py-1 rounded-full bg-white border border-border-subtle hover:border-interactive-blue hover:text-interactive-blue text-text-secondary text-xs font-medium flex items-center gap-1.5 shadow-2xs hover:shadow-xs transition-all focus:outline-none focus:ring-2 focus:ring-interactive-blue/30"
                       title={`Add step between step ${index + 1} and ${index + 2}`}
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add step</span>
                     </button>
-                    <div className="w-0.5 h-3 bg-[#DDE4EB]" />
+                    <div className="w-0.5 h-3 bg-border-subtle" />
                   </div>
                 )}
               </React.Fragment>
@@ -462,6 +471,6 @@ export const WorkflowSequence: React.FC<WorkflowSequenceProps> = ({
           }
         }}
       />
-    </main>
+    </section>
   );
 };

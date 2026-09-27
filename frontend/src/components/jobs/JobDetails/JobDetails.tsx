@@ -583,18 +583,18 @@ export const JobDetails: React.FC = () => {
               <div className="flex items-center gap-2">
                 <UserCheck className="w-5 h-5 text-interactive-blue" />
                 <h3 className="text-base font-semibold text-text-primary">
-                  Candidate Applications Saved in Database ({candidates.length})
+                  Form submissions ({candidates.length})
                 </h3>
               </div>
-              <button
+              {import.meta.env.DEV && <button
                 type="button"
                 disabled={isSimulating}
                 onClick={handleSimulateCandidate}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-interactive-blue hover:bg-nav-activeText text-surface text-xs font-semibold rounded-item transition-colors disabled:opacity-50"
               >
                 {isSimulating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <PlusCircle className="w-3.5 h-3.5" />}
-                <span>Simulate Form Submission</span>
-              </button>
+                <span>Add test submission (development)</span>
+              </button>}
             </div>
 
             {candidates.length === 0 ? (

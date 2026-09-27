@@ -5,6 +5,7 @@ import {
   GitBranch,
   Phone,
   Mic,
+  CalendarDays,
   Settings,
 } from 'lucide-react';
 import { NavigationItem } from '../types/navigation';
@@ -33,7 +34,7 @@ export const MAIN_NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'workflow',
-    label: 'Hiring Workflow',
+    label: 'Hiring workflows',
     path: '/workflow',
     icon: GitBranch,
     section: 'main',
@@ -43,6 +44,13 @@ export const MAIN_NAVIGATION_ITEMS: NavigationItem[] = [
     label: 'AI Calling',
     path: '/ai-calling',
     icon: Phone,
+    section: 'main',
+  },
+  {
+    id: 'interviews',
+    label: 'Interviews',
+    path: '/interviews',
+    icon: CalendarDays,
     section: 'main',
   },
   {
@@ -74,7 +82,7 @@ export function getRouteTitle(pathname: string): string {
   if (pathname.startsWith('/jobs/') && pathname.endsWith('/edit')) return 'Edit Job';
   if (pathname.startsWith('/jobs/')) return 'Job Details';
   if (pathname.startsWith('/workflow/') && pathname.includes('/executions/')) return 'Execution Detail';
-  if (pathname.startsWith('/workflow/')) return 'Standard Recruitment Workflow';
+  if (pathname.startsWith('/workflow/')) return 'Workflow editor';
   if (pathname === '/workflow') return 'Hiring Workflows';
   if (pathname.startsWith('/candidates/')) return 'Candidate Details';
   const item = ALL_NAVIGATION_ITEMS.find((nav) => nav.path === pathname);

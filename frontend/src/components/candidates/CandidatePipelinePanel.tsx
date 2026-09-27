@@ -194,8 +194,8 @@ export default function CandidatePipelinePanel({ candidateId, jobId, candidateNa
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-4 flex items-start justify-between">
         <div>
-          <h2 className="text-white text-lg font-bold">{candidateName || 'Candidate Pipeline'}</h2>
-          <p className="text-blue-200 text-sm mt-0.5">{detail.job_title || jobId}</p>
+          <h2 className="text-text-primary text-lg font-bold">{candidateName || 'Candidate Pipeline'}</h2>
+          <p className="text-interactive-blue text-sm mt-0.5">{detail.job_title || jobId}</p>
           <div className="mt-2">{stageBadge(detail.stage)}</div>
         </div>
         <div className="flex items-center gap-2">
@@ -203,13 +203,13 @@ export default function CandidatePipelinePanel({ candidateId, jobId, candidateNa
             <button
               onClick={handleDownloadResume}
               disabled={actionLoading === 'download'}
-              className="bg-white/20 hover:bg-white/30 text-white text-sm px-3 py-1.5 rounded-lg transition"
+              className="bg-white/20 hover:bg-white/30 text-text-primary text-sm px-3 py-1.5 rounded-lg transition"
             >
               {actionLoading === 'download' ? '…' : '⬇ Resume'}
             </button>
           )}
           {onClose && (
-            <button onClick={onClose} className="text-white/70 hover:text-white text-xl ml-2">✕</button>
+            <button onClick={onClose} className="text-text-primary/70 hover:text-text-primary text-xl ml-2">✕</button>
           )}
         </div>
       </div>
@@ -356,7 +356,7 @@ export default function CandidatePipelinePanel({ candidateId, jobId, candidateNa
                 <p className="text-4xl mb-2">📄</p>
                 <p className="text-sm">No extracted profile yet.</p>
                 <button onClick={handleExtract} disabled={!!actionLoading}
-                  className="mt-3 bg-blue-600 text-white text-sm px-4 py-2 rounded-lg">
+                  className="mt-3 bg-blue-600 text-text-primary text-sm px-4 py-2 rounded-lg">
                   {actionLoading === 'extract' ? 'Extracting…' : 'Extract Now'}
                 </button>
               </div>

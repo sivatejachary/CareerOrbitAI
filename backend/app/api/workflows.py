@@ -48,6 +48,8 @@ def get_workflow(
         "description": wf.description,
         "is_company_default": wf.is_company_default,
         "status": wf.status,
+        "job_usage_count": sum(1 for binding in wf.job_bindings if binding.is_active),
+        "active_execution_count": db.query(WorkflowExecution).filter(WorkflowExecution.workflow_version_id.in_([v.id for v in wf.versions]), WorkflowExecution.organization_id == current_user.organization_id, WorkflowExecution.status.in_(['Pending', 'Running', 'WaitingForEvent', 'WaitingForHuman', 'WaitingUntilTime', 'Blocked', 'Paused'])).count(),
         "created_at": wf.created_at,
         "updated_at": wf.updated_at,
         "versions": [

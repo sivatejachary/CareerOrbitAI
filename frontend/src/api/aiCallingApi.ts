@@ -35,6 +35,8 @@ export const aiCallingApi = {
     job_id?: string;
     candidate_id?: string;
     status_filter?: string;
+    category?: string;
+    search?: string;
     batch_id?: string;
     page?: number;
     size?: number;
@@ -42,6 +44,8 @@ export const aiCallingApi = {
     const query = new URLSearchParams();
     if (params?.job_id) query.append('job_id', params.job_id);
     if (params?.candidate_id) query.append('candidate_id', params.candidate_id);
+    if (params?.category) query.append('category', params.category);
+    if (params?.search) query.append('search', params.search);
     if (params?.status_filter) query.append('status_filter', params.status_filter);
     if (params?.batch_id) query.append('batch_id', params.batch_id);
     if (params?.page) query.append('page', params.page.toString());

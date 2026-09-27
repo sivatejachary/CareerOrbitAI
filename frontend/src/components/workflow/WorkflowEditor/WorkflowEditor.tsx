@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
+import { ErrorState } from '../../ui/Workspace';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { workflowApi } from '../../../api/workflowApi';
 import {
@@ -21,6 +23,10 @@ import { SimulationModal } from './SimulationModal';
 import { StepMenuItem } from './AddStepMenu';
 
 export const WorkflowEditor: React.FC = () => {
+  const navigate = useNavigate();
+  const [actionError, setActionError] = useState('');
+  const [showHistory, setShowHistory] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
   const { workflowId, versionId } = useParams<{ workflowId: string; versionId?: string }>();
 
   // Workflow & Version Metadata
@@ -33,6 +39,8 @@ export const WorkflowEditor: React.FC = () => {
   const [steps, setSteps] = useState<WorkflowStepItem[]>([]);
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
 
+  const currentVersionRef = useRef<string | null>(null);
+
   // Save & Network State
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('SAVED');
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -43,25 +51,6 @@ export const WorkflowEditor: React.FC = () => {
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [showSimulationModal, setShowSimulationModal] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-
-  // Network offline detection
-  useEffect(() => {
-    const handleOnline = () => {
-      if (isDirtyRef.current) {
-        triggerAutosave();
-      } else {
-        setSaveStatus('SAVED');
-      }
-    };
-    const handleOffline = () => setSaveStatus('OFFLINE');
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
 
   // Load Workflow Data
   const loadWorkflowData = useCallback(async () => {
@@ -82,6 +71,7 @@ export const WorkflowEditor: React.FC = () => {
       if (targetVersionId) {
         const vDetail = await workflowApi.getWorkflowVersion(workflowId, targetVersionId);
         setVersionDetail(vDetail);
+        currentVersionRef.current = vDetail.id;
 
         // Convert backend graph data to HR sequential steps with branches
         const parsedSteps = graphToWorkflowSteps(vDetail.graph_data);
@@ -120,11 +110,12 @@ export const WorkflowEditor: React.FC = () => {
       setSaveStatus('SAVING');
       try {
         const graph = workflowStepsToGraph(stepsToSave);
-        const updatedVersion = await workflowApi.saveWorkflowDraft(workflowId, versionDetail.id, graph);
+        const updatedVersion = await workflowApi.saveWorkflowDraft(workflowId, currentVersionRef.current || versionDetail.id, graph);
         setVersionDetail(updatedVersion);
+        currentVersionRef.current = updatedVersion.id;
         setSaveStatus('SAVED');
         setLastSavedAt(new Date());
-        isDirtyRef.current = false;
+        if (pendingStepsRef.current === stepsToSave) { isDirtyRef.current = false; pendingStepsRef.current = null; }
       } catch (err: any) {
         console.error('Save failed:', err);
         setSaveStatus('SAVE_FAILED');
@@ -133,20 +124,31 @@ export const WorkflowEditor: React.FC = () => {
     [workflowId, versionDetail]
   );
 
-  // Debounced Autosave (1.5 seconds)
-  const triggerAutosave = useCallback(
-    (newSteps?: WorkflowStepItem[]) => {
-      const targetSteps = newSteps || steps;
-      isDirtyRef.current = true;
-      if (autosaveTimeoutRef.current) {
-        clearTimeout(autosaveTimeoutRef.current);
-      }
-      autosaveTimeoutRef.current = setTimeout(() => {
-        saveDraftToBackend(targetSteps);
-      }, 1500);
-    },
-    [steps, saveDraftToBackend]
-  );
+  // Keep the latest pending edit for reconnect and serialize saves so old
+  // requests cannot overwrite newer edits on the server.
+  const pendingStepsRef = useRef<WorkflowStepItem[] | null>(null);
+  const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const triggerAutosave = useCallback((newSteps: WorkflowStepItem[]) => {
+    pendingStepsRef.current = newSteps;
+    isDirtyRef.current = true;
+    if (autosaveTimeoutRef.current) clearTimeout(autosaveTimeoutRef.current);
+    autosaveTimeoutRef.current = setTimeout(() => {
+      saveQueueRef.current = saveQueueRef.current.then(() => saveDraftToBackend(newSteps));
+    }, 1500);
+  }, [saveDraftToBackend]);
+
+  useEffect(() => {
+    const online = () => { if (pendingStepsRef.current) triggerAutosave(pendingStepsRef.current); };
+    const offline = () => setSaveStatus('OFFLINE');
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (isDirtyRef.current) { event.preventDefault(); event.returnValue = ''; }
+    };
+    window.addEventListener('online', online);
+    window.addEventListener('offline', offline);
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => { window.removeEventListener('online', online); window.removeEventListener('offline', offline); window.removeEventListener('beforeunload', beforeUnload); };
+  }, [triggerAutosave]);
+  useEffect(() => () => { if (autosaveTimeoutRef.current) clearTimeout(autosaveTimeoutRef.current); }, []);
 
   // Update steps with autosave trigger
   const updateSteps = useCallback(
@@ -161,7 +163,7 @@ export const WorkflowEditor: React.FC = () => {
   const handleMoveStep = useCallback(
     (fromIndex: number, toIndex: number) => {
       if (fromIndex <= 0 || toIndex <= 0) return; // Cannot move pinned start node
-      if (fromIndex >= steps.length - 1 || toIndex >= steps.length) return;
+      if (fromIndex >= steps.length - 1 || toIndex >= steps.length - 1) return;
 
       const copy = [...steps];
       const [moved] = copy.splice(fromIndex, 1);
@@ -280,7 +282,7 @@ export const WorkflowEditor: React.FC = () => {
       const updated = await workflowApi.updateWorkflow(workflowId, { name: newName });
       setWorkflow(updated);
     } catch (err: any) {
-      alert(`Failed to rename workflow: ${err.message}`);
+      setActionError(`Failed to rename workflow: ${err.message}`);
     }
   };
 
@@ -289,18 +291,23 @@ export const WorkflowEditor: React.FC = () => {
     if (!workflowId || !versionDetail) return;
     setIsPublishing(true);
     try {
+      if (autosaveTimeoutRef.current) clearTimeout(autosaveTimeoutRef.current);
+      await saveQueueRef.current;
       // 1. Ensure current draft is saved
       const graph = workflowStepsToGraph(steps);
-      await workflowApi.saveWorkflowDraft(workflowId, versionDetail.id, graph);
+      const savedDraft = await workflowApi.saveWorkflowDraft(workflowId, currentVersionRef.current || versionDetail.id, graph);
+      currentVersionRef.current = savedDraft.id;
+      isDirtyRef.current = false;
+      pendingStepsRef.current = null;
 
       // 2. Publish version
-      await workflowApi.publishWorkflowVersion(workflowId, versionDetail.id);
+      await workflowApi.publishWorkflowVersion(workflowId, savedDraft.id);
       setShowPublishModal(false);
 
       // 3. Reload workflow
       await loadWorkflowData();
     } catch (err: any) {
-      alert(`Publish failed: ${err.message}`);
+      setActionError(`Publish failed: ${err.message}`);
     } finally {
       setIsPublishing(false);
     }
@@ -315,9 +322,9 @@ export const WorkflowEditor: React.FC = () => {
   // Loading State
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#F6F8FB]">
-        <div className="flex flex-col items-center gap-3 text-[#5B6C7D]">
-          <Loader2 className="w-6 h-6 animate-spin text-[#245FAD]" />
+      <div className="flex min-h-[50vh] items-center justify-center bg-workspace">
+        <div className="flex flex-col items-center gap-3 text-text-secondary">
+          <Loader2 className="w-6 h-6 animate-spin text-interactive-blue" />
           <span className="text-sm font-medium">Loading hiring workflow...</span>
         </div>
       </div>
@@ -327,15 +334,15 @@ export const WorkflowEditor: React.FC = () => {
   // Error State
   if (loadError) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#F6F8FB] p-4">
+      <div className="flex min-h-[50vh] items-center justify-center bg-workspace p-4">
         <div className="max-w-md w-full bg-white p-6 rounded-xl border border-rose-200 shadow-sm text-center space-y-3">
           <AlertCircle className="w-8 h-8 text-rose-600 mx-auto" />
-          <h2 className="text-base font-bold text-[#192D42]">Unable to load workflow</h2>
-          <p className="text-xs text-[#5B6C7D]">{loadError}</p>
+          <h2 className="text-base font-bold text-text-primary">Unable to load workflow</h2>
+          <p className="text-xs text-text-secondary">{loadError}</p>
           <button
             type="button"
             onClick={loadWorkflowData}
-            className="px-4 py-2 bg-[#245FAD] text-white text-xs font-semibold rounded-lg hover:bg-[#10263E]"
+            className="px-4 py-2 bg-interactive-blue text-white text-xs font-semibold rounded-lg hover:bg-brand-navy"
           >
             Retry Loading
           </button>
@@ -345,7 +352,10 @@ export const WorkflowEditor: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-68px)] w-full bg-[#F6F8FB] overflow-hidden select-none -m-4 md:-m-6 xl:-m-8">
+    <div className="flex flex-col h-[calc(100dvh-108px)] w-full bg-workspace overflow-hidden">
+      {actionError && <ErrorState message={actionError} />}
+      {showHistory && <section className="ui-panel p-4 flex flex-wrap items-center gap-3" aria-label="Workflow version history"><strong>Version history</strong>{workflow?.versions?.map((v: { id: string; version_number: number; publication_state: string }) => <Link key={v.id} className="ui-button ui-button-secondary" to={`/workflow/${workflowId}/versions/${v.id}`} onClick={() => setShowHistory(false)}>v{v.version_number} · {v.publication_state}</Link>)}<button onClick={() => setShowHistory(false)} className="ui-button ui-button-secondary">Close history</button></section>}
+      {duplicating && <p role="status" className="p-3 text-sm">Creating workflow copy…</p>}
       {/* Compact Workflow Header */}
       <WorkflowHeader
         workflowName={workflow?.name || 'Standard Recruitment Workflow'}
@@ -360,12 +370,20 @@ export const WorkflowEditor: React.FC = () => {
         onManualSaveRetry={() => saveDraftToBackend(steps)}
         onOpenPreview={() => setShowSimulationModal(true)}
         onOpenPublishReview={() => setShowPublishModal(true)}
-        onDuplicateWorkflow={() => {
-          alert('Workflow duplicated to draft. You can customize the copied steps.');
+        onDuplicateWorkflow={async () => {
+          if (duplicating) return;
+          setDuplicating(true); setActionError('');
+          try {
+            const copy = await workflowApi.createWorkflow({ name: `${workflow.name} (copy)`, description: workflow.description || '', is_company_default: false });
+            const detail = await workflowApi.getWorkflow(copy.id);
+            const draft = detail.versions.find((v: { publication_state: string }) => v.publication_state === 'Draft');
+            if (!draft) throw new Error('The copied workflow has no editable version.');
+            await workflowApi.saveWorkflowDraft(copy.id, draft.id, workflowStepsToGraph(steps));
+            navigate(`/workflow/${copy.id}`);
+          } catch (error) { setActionError(`Unable to finish copying the workflow. ${(error as Error).message}`); }
+          finally { setDuplicating(false); }
         }}
-        onOpenVersionHistory={() => {
-          alert(`Workflow History: Version ${versionDetail?.version_number} (${versionDetail?.publication_state}).`);
-        }}
+        onOpenVersionHistory={() => setShowHistory(value => !value)}
       />
 
       {/* Main Workspace Body: Main width dedicated to sequence; inspector slides in on right when a step is selected */}
@@ -401,11 +419,11 @@ export const WorkflowEditor: React.FC = () => {
         {/* Mobile & Tablet Drawer for Step Settings (< 1024px) */}
         {selectedStep && (
           <div
-            className="lg:hidden fixed inset-0 z-50 flex justify-end bg-[#10263E]/40 backdrop-blur-xs"
+            className="lg:hidden fixed inset-0 z-50 flex justify-end bg-brand-navy/40 backdrop-blur-xs"
             onClick={() => setSelectedStepId(null)}
           >
             <div
-              className="w-full max-w-sm sm:max-w-md h-full bg-white shadow-2xl flex flex-col"
+              className="w-full max-w-sm sm:max-w-md h-full bg-white shadow-drawer flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               <StepConfigPanel
@@ -427,8 +445,8 @@ export const WorkflowEditor: React.FC = () => {
           currentVersionNumber={versionDetail?.version_number ?? 1}
           steps={steps}
           validationIssues={validationIssues}
-          affectedJobsCount={workflow?.job_usage_count || 1}
-          activeExecutionsCount={12}
+          affectedJobsCount={workflow?.job_usage_count ?? 0}
+          activeExecutionsCount={workflow?.active_execution_count ?? 0}
           isPublishing={isPublishing}
           onConfirmPublish={handleConfirmPublish}
           onClose={() => setShowPublishModal(false)}

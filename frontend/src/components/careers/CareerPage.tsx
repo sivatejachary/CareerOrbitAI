@@ -92,7 +92,7 @@ export const CareerPage: React.FC = () => {
   if (error || !job) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-300 p-4">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-4">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-menu p-8 text-center space-y-4">
           <AlertCircle className="w-12 h-12 mx-auto text-rose-500" />
           <h2 className="text-xl font-bold text-white">Job Posting Not Found</h2>
           <p className="text-slate-400 text-sm">{error || 'This career page is no longer active or the URL is invalid.'}</p>
@@ -104,7 +104,7 @@ export const CareerPage: React.FC = () => {
   if (submitSuccess) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-6 shadow-2xl">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-menu p-8 text-center space-y-6 shadow-drawer">
           <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-10 h-10" />
           </div>
@@ -145,7 +145,7 @@ export const CareerPage: React.FC = () => {
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-6 py-10 space-y-10">
         {/* Job Banner Hero */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/40 border border-slate-800 rounded-2xl p-8 space-y-6 shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/40 border border-slate-800 rounded-menu p-8 space-y-6 shadow-dropdown relative overflow-hidden">
           <div className="absolute right-0 top-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl -z-0"></div>
 
           <div className="space-y-3 relative z-10">
@@ -225,7 +225,7 @@ export const CareerPage: React.FC = () => {
 
           {/* Right Column: Application Form */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 sticky top-24 shadow-xl">
+            <div className="bg-slate-900 border border-slate-800 rounded-menu p-6 space-y-6 sticky top-24 shadow-dropdown">
               <div className="border-b border-slate-800 pb-4">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-indigo-400" /> Apply for Position

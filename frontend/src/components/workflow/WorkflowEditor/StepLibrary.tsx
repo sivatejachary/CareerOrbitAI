@@ -244,39 +244,39 @@ export const StepLibrary: React.FC<StepLibraryProps> = ({ onAddStep, className =
   return (
     <aside
       aria-label="Step Library"
-      className={`w-[240px] shrink-0 bg-white border-r border-[#DDE4EB] flex flex-col h-full select-none ${className}`}
+      className={`w-[240px] shrink-0 bg-white border-r border-border-subtle flex flex-col h-full select-none ${className}`}
     >
       {/* Search Header */}
-      <div className="p-3 border-b border-[#DDE4EB]">
+      <div className="p-3 border-b border-border-subtle">
         <div className="flex items-center justify-between mb-1.5">
-          <h2 className="text-xs font-bold text-[#192D42] uppercase tracking-wider">
+          <h2 className="text-xs font-bold text-text-primary uppercase tracking-wider">
             Step Library
           </h2>
-          <span className="text-[11px] text-[#5B6C7D]">
+          <span className="text-[11px] text-text-secondary">
             {filteredItems.length} steps
           </span>
         </div>
-        <p className="text-[11px] text-[#5B6C7D] mb-2 leading-tight">
+        <p className="text-[11px] text-text-secondary mb-2 leading-tight">
           Select or add an action to your hiring workflow sequence
         </p>
         <div className="relative">
-          <Search className="w-3.5 h-3.5 text-[#5B6C7D] absolute left-2.5 top-2 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 text-text-secondary absolute left-2.5 top-2 pointer-events-none" />
           <input
             type="text"
             placeholder="Search steps..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-[#F6F8FB] border border-[#DDE4EB] rounded-lg text-[#192D42] placeholder-[#5B6C7D] focus:outline-none focus:ring-1 focus:ring-[#245FAD]"
+            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-workspace border border-border-subtle rounded-lg text-text-primary placeholder-[#5B6C7D] focus:outline-none focus:ring-1 focus:ring-interactive-blue"
           />
         </div>
       </div>
 
       {/* Pinned Start Step Reminder */}
-      <div className="px-3 pt-2.5 pb-2 border-b border-[#DDE4EB] bg-[#F6F8FB]/60">
-        <div className="flex items-center gap-2 text-[11px] text-[#5B6C7D]">
+      <div className="px-3 pt-2.5 pb-2 border-b border-border-subtle bg-workspace/60">
+        <div className="flex items-center gap-2 text-[11px] text-text-secondary">
           <FileText className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span className="truncate">
-            Pinned: <strong className="text-[#192D42]">Candidate applies</strong>
+            Pinned: <strong className="text-text-primary">Candidate applies</strong>
           </span>
         </div>
       </div>
@@ -289,7 +289,7 @@ export const StepLibrary: React.FC<StepLibraryProps> = ({ onAddStep, className =
 
           return (
             <div key={category} className="space-y-1.5">
-              <div className="text-[10px] font-bold text-[#5B6C7D] uppercase tracking-wider px-1">
+              <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider px-1">
                 {category}
               </div>
               <div className="space-y-1">
@@ -300,20 +300,20 @@ export const StepLibrary: React.FC<StepLibraryProps> = ({ onAddStep, className =
                       key={item.type + item.title}
                       type="button"
                       onClick={() => onAddStep(item)}
-                      className="w-full text-left p-2 rounded-lg border border-transparent hover:border-[#DDE4EB] hover:bg-[#F6F8FB] transition-all group flex flex-col gap-1 focus:outline-none focus:ring-2 focus:ring-[#245FAD]"
+                      className="w-full text-left p-2 rounded-lg border border-transparent hover:border-border-subtle hover:bg-workspace transition-all group flex flex-col gap-1 focus:outline-none focus:ring-2 focus:ring-interactive-blue"
                     >
                       <div className="flex items-center justify-between w-full">
                         <div className="flex items-center gap-2 min-w-0">
-                          <div className="p-1 rounded-md bg-[#F6F8FB] text-[#245FAD] group-hover:bg-[#245FAD] group-hover:text-white transition-colors shrink-0">
+                          <div className="p-1 rounded-md bg-workspace text-interactive-blue group-hover:bg-interactive-blue group-hover:text-white transition-colors shrink-0">
                             <Icon className="w-3.5 h-3.5" />
                           </div>
-                          <span className="text-xs font-semibold text-[#192D42] group-hover:text-[#245FAD] truncate">
+                          <span className="text-xs font-semibold text-text-primary group-hover:text-interactive-blue truncate">
                             {item.title}
                           </span>
                         </div>
-                        <Plus className="w-3.5 h-3.5 text-[#5B6C7D] group-hover:text-[#245FAD] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                        <Plus className="w-3.5 h-3.5 text-text-secondary group-hover:text-interactive-blue opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                       </div>
-                      <p className="text-[11px] text-[#5B6C7D] line-clamp-2 leading-snug pl-0.5">
+                      <p className="text-[11px] text-text-secondary line-clamp-2 leading-snug pl-0.5">
                         {item.purpose}
                       </p>
                       {item.setupRequiredMessage && (

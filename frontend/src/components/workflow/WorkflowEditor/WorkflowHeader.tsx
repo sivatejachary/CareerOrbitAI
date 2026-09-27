@@ -73,20 +73,20 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
 
   return (
     <>
-      <header className="h-14 bg-white border-b border-[#DDE4EB] px-4 flex items-center justify-between z-30 shrink-0 select-none">
+      <header className="h-14 bg-white border-b border-border-subtle px-4 flex items-center justify-between z-30 shrink-0 select-none">
         {/* Left: Back | Title & Subtitle Context | Version Badge */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={() => navigate('/workflow')}
-            className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-[#5B6C7D] hover:text-[#192D42] hover:bg-[#F6F8FB] rounded-lg transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-workspace rounded-lg transition-colors shrink-0"
             title="Back to workflows"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Back</span>
           </button>
 
-          <div className="h-5 w-px bg-[#DDE4EB] hidden sm:block shrink-0" />
+          <div className="h-5 w-px bg-border-subtle hidden sm:block shrink-0" />
 
           {/* Workflow Title & Supporting Context */}
           <div className="min-w-0 flex flex-col justify-center">
@@ -103,12 +103,12 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
                       if (e.key === 'Enter') handleFinishRename();
                       if (e.key === 'Escape') setIsEditingTitle(false);
                     }}
-                    className="px-2 py-0.5 text-sm font-bold text-[#192D42] bg-[#F6F8FB] border border-[#245FAD] rounded focus:outline-none"
+                    className="px-2 py-0.5 text-sm font-bold text-text-primary bg-workspace border border-interactive-blue rounded focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={handleFinishRename}
-                    className="p-1 bg-[#245FAD] text-white rounded text-[10px]"
+                    className="p-1 bg-interactive-blue text-white rounded text-[10px]"
                   >
                     <Check className="w-3 h-3" />
                   </button>
@@ -120,7 +120,7 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
                     setIsEditingTitle(true);
                   }}
                   title="Click to rename workflow"
-                  className="text-sm font-bold text-[#192D42] hover:text-[#245FAD] transition-colors truncate cursor-pointer"
+                  className="text-sm font-bold text-text-primary hover:text-interactive-blue transition-colors truncate cursor-pointer"
                 >
                   {workflowName || 'Standard Recruitment Workflow'}
                 </h1>
@@ -139,13 +139,13 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
             </div>
 
             {/* Quiet Supporting Context Beneath Title */}
-            <div className="flex items-center gap-1 text-[11px] text-[#5B6C7D] mt-0.5">
+            <div className="flex items-center gap-1 text-[11px] text-text-secondary mt-0.5">
               <span>{isCompanyDefault ? 'Default for all jobs' : associatedJobTitle || 'Custom workflow'}</span>
               <span>·</span>
               <button
                 type="button"
                 onClick={() => setShowJobsModal(true)}
-                className="text-[#245FAD] hover:underline inline-flex items-center font-medium gap-0.5"
+                className="text-interactive-blue hover:underline inline-flex items-center font-medium gap-0.5"
                 title="Inspect jobs using this workflow"
               >
                 <span>Inspect linked jobs</span>
@@ -158,8 +158,8 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
         {/* Center: Save status (strictly without seconds: "Saved at 4:35 PM" or "Saving...") */}
         <div className="hidden lg:flex items-center gap-2 text-xs">
           {saveStatus === 'SAVING' && (
-            <span className="flex items-center gap-1.5 text-[#5B6C7D]">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#245FAD]" />
+            <span className="flex items-center gap-1.5 text-text-secondary">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-interactive-blue" />
               <span>Saving...</span>
             </span>
           )}
@@ -212,9 +212,9 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenPreview}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#DDE4EB] hover:bg-[#F6F8FB] hover:border-[#245FAD] text-[#192D42] text-xs font-medium rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-border-subtle hover:bg-workspace hover:border-interactive-blue text-text-primary text-xs font-medium rounded-lg transition-colors"
           >
-            <Eye className="w-3.5 h-3.5 text-[#245FAD]" />
+            <Eye className="w-3.5 h-3.5 text-interactive-blue" />
             <span>Preview</span>
           </button>
 
@@ -222,7 +222,7 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
           <button
             type="button"
             onClick={onOpenPublishReview}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#245FAD] hover:bg-[#10263E] text-white text-xs font-bold rounded-lg shadow-xs transition-colors focus:ring-2 focus:ring-[#245FAD]/40"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-interactive-blue hover:bg-brand-navy text-white text-xs font-bold rounded-lg shadow-xs transition-colors focus:ring-2 focus:ring-interactive-blue/40"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Publish changes</span>
@@ -233,7 +233,7 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
             <button
               type="button"
               onClick={() => setShowOverflow(!showOverflow)}
-              className="p-1.5 rounded-lg text-[#5B6C7D] hover:text-[#192D42] hover:bg-[#F6F8FB] transition-colors"
+              className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-workspace transition-colors"
               title="More actions"
             >
               <MoreVertical className="w-4 h-4" />
@@ -241,23 +241,23 @@ export const WorkflowHeader: React.FC<WorkflowHeaderProps> = ({
 
             {showOverflow && (
               <div
-                className="absolute right-0 mt-1 w-48 bg-white border border-[#DDE4EB] rounded-lg shadow-lg py-1 z-40 text-xs text-[#192D42]"
+                className="absolute right-0 mt-1 w-48 bg-white border border-border-subtle rounded-lg shadow-lg py-1 z-40 text-xs text-text-primary"
                 onClick={() => setShowOverflow(false)}
               >
                 <button
                   type="button"
                   onClick={onDuplicateWorkflow}
-                  className="w-full text-left px-3 py-2 hover:bg-[#F6F8FB] flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 hover:bg-workspace flex items-center gap-2"
                 >
-                  <Copy className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                  <Copy className="w-3.5 h-3.5 text-text-secondary" />
                   <span>Duplicate workflow</span>
                 </button>
                 <button
                   type="button"
                   onClick={onOpenVersionHistory}
-                  className="w-full text-left px-3 py-2 hover:bg-[#F6F8FB] flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 hover:bg-workspace flex items-center gap-2"
                 >
-                  <History className="w-3.5 h-3.5 text-[#5B6C7D]" />
+                  <History className="w-3.5 h-3.5 text-text-secondary" />
                   <span>Version history</span>
                 </button>
               </div>

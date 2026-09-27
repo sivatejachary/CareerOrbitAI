@@ -212,7 +212,7 @@ export default function JobPipelineView({ jobId, jobTitle }: Props) {
             className="flex-1 bg-black/30 backdrop-blur-sm"
             onClick={() => setSelectedCandidate(null)}
           />
-          <div className="w-full max-w-2xl bg-white shadow-2xl overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white shadow-drawer overflow-y-auto">
             <CandidatePipelinePanel
               candidateId={selectedCandidate.candidate_id}
               jobId={jobId}

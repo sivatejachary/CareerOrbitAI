@@ -33,6 +33,7 @@ def list_applications(
     status_filter: Optional[str] = Query(None, alias="status", description="Filter by status"),
     source: Optional[str] = Query(None, description="Filter by source channel"),
     search: Optional[str] = Query(None, description="Search candidate name or email"),
+    sort: str = Query("newest", pattern="^(newest|name)$"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     current_user: User = Depends(get_current_user),
@@ -62,7 +63,7 @@ def list_applications(
         )
 
     total_count = query.count()
-    applications = query.order_by(JobApplication.received_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    applications = query.order_by(Candidate.full_name.asc() if sort == "name" else JobApplication.received_at.desc(), JobApplication.id.asc()).offset((page - 1) * page_size).limit(page_size).all()
 
     items = []
     for app in applications:

@@ -52,7 +52,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       />
 
       {/* Main Content Area Container */}
-      <div className="flex-1 flex flex-col md:pl-[80px] xl:pl-[256px] min-w-0 transition-all duration-150">
+      <div className="flex-1 flex flex-col md:pl-[80px] xl:pl-[240px] min-w-0">
         {/* Top Header */}
         <TopHeader
           title={currentTitle}
@@ -65,7 +65,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex-1 px-4 md:px-6 xl:px-8 py-6 max-w-full focus:outline-none"
+          className="flex-1 min-w-0 px-4 md:px-6 xl:px-8 py-6 max-w-full focus:outline-none"
         >
           {children}
         </main>

@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useState } from 'react';
 import {
   X,
@@ -19,14 +20,16 @@ export const InitiateCallModal: React.FC<InitiateCallModalProps> = ({
   onClose,
   onSuccess
 }) => {
-  if (!isOpen) return null;
 
+  const dialogRef = useDialogFocus(isOpen, onClose);
   const [candidateId, setCandidateId] = useState('');
   const [jobId, setJobId] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [customGreeting, setCustomGreeting] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,8 +57,8 @@ export const InitiateCallModal: React.FC<InitiateCallModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 select-none">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4 border border-slate-200">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Start a single AI call" tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 select-none">
+      <div className="bg-white rounded-xl shadow-dropdown max-w-md w-full p-6 space-y-4 border border-slate-200">
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-blue-100 text-blue-700">

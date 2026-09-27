@@ -210,7 +210,7 @@ export const PublicApplicationPage: React.FC = () => {
   if (submissionReceipt) {
     return (
       <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="max-w-xl mx-auto bg-white rounded-menu shadow-sm border border-slate-200 overflow-hidden">
           <div className="bg-emerald-600 p-8 text-white text-center">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
               <CheckCircle2 className="w-10 h-10 text-white" />
@@ -316,7 +316,7 @@ export const PublicApplicationPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Job Header Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-menu shadow-sm border border-slate-200 overflow-hidden">
           <div className="bg-slate-900 text-white p-6 sm:p-8">
             <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">
               <Briefcase className="w-4 h-4" />
@@ -404,7 +404,7 @@ export const PublicApplicationPage: React.FC = () => {
         </div>
 
         {/* Application Form Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+        <div className="bg-white rounded-menu shadow-sm border border-slate-200 p-6 sm:p-8">
           <div className="border-b border-slate-100 pb-5 mb-6">
             <h2 className="text-xl font-bold text-slate-900">Application Form</h2>
             <p className="text-xs text-slate-500 mt-1">
@@ -566,7 +566,7 @@ export const PublicApplicationPage: React.FC = () => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
+                className={`border-2 border-dashed rounded-menu p-8 text-center cursor-pointer transition-all ${
                   isDragging
                     ? 'border-blue-500 bg-blue-50/50 scale-[1.01]'
                     : resumeFile

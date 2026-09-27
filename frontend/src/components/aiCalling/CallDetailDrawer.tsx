@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useState } from 'react';
 import {
   X,
@@ -19,10 +20,12 @@ export const CallDetailDrawer: React.FC<CallDetailDrawerProps> = ({
   onClose,
   onUpdateCall
 }) => {
-  if (!call) return null;
 
+  const dialogRef = useDialogFocus(!!call, onClose);
   const [dncUpdating, setDncUpdating] = useState(false);
   const [dncSuccess, setDncSuccess] = useState(false);
+
+  if (!call) return null;
 
   const evaluation = call.evaluation;
   const transcript = call.transcript;
@@ -61,7 +64,7 @@ export const CallDetailDrawer: React.FC<CallDetailDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl z-50 flex flex-col border-l border-slate-200 select-none animate-in slide-in-from-right duration-200">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Call details" tabIndex={-1} className="fixed inset-y-0 right-0 w-full max-w-xl bg-white shadow-drawer z-50 flex flex-col border-l border-slate-200 select-none animate-in slide-in-from-right duration-200">
       {/* Header */}
       <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
         <div className="flex items-center gap-3">
@@ -80,6 +83,7 @@ export const CallDetailDrawer: React.FC<CallDetailDrawerProps> = ({
 
         <button
           type="button"
+          aria-label="Close call details"
           onClick={onClose}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
         >
@@ -231,7 +235,7 @@ export const CallDetailDrawer: React.FC<CallDetailDrawerProps> = ({
                       )}
                     </div>
                     <div
-                      className={`max-w-[85%] px-3.5 py-2 rounded-2xl text-xs leading-relaxed ${
+                      className={`max-w-[85%] px-3.5 py-2 rounded-menu text-xs leading-relaxed ${
                         isAgent
                           ? 'bg-blue-600 text-white rounded-tl-xs'
                           : 'bg-white text-slate-800 border border-slate-200 rounded-tr-xs shadow-xs'

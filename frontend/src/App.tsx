@@ -1,4 +1,7 @@
 import React from 'react';
+import { Dashboard } from './components/Dashboard';
+import { SettingsPage } from './components/SettingsPage';
+import { InterviewsPage } from './components/InterviewsPage';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
 import { RoutePlaceholder } from './components/RoutePlaceholder';
@@ -28,8 +31,8 @@ export const App: React.FC = () => {
             <AppShell>
               <Routes>
                 {/* Redirect root to /jobs */}
-                <Route path="/" element={<Navigate to="/jobs" replace />} />
-                <Route path="/dashboard" element={<RoutePlaceholder />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
 
                 {/* Jobs Routes */}
                 <Route path="/jobs" element={<JobsList />} />
@@ -48,13 +51,15 @@ export const App: React.FC = () => {
                 <Route path="/workflow/:workflowId/versions/:versionId" element={<WorkflowEditor />} />
                 <Route path="/workflow/executions/:executionId" element={<WorkflowExecutionDetail />} />
 
+                <Route path="/interviews" element={<InterviewsPage />} />
+
                 {/* AI Calling Workspace */}
                 <Route path="/ai-calling" element={<AICallingWorkspace />} />
                 <Route path="/ai-calling/:callId" element={<AICallingWorkspace />} />
 
                 {/* Other Module Placeholders */}
                 <Route path="/ai-interviews" element={<RoutePlaceholder />} />
-                <Route path="/settings" element={<RoutePlaceholder />} />
+                <Route path="/settings" element={<SettingsPage />} />
 
                 {/* Catch-all fallback */}
                 <Route path="*" element={<Navigate to="/jobs" replace />} />

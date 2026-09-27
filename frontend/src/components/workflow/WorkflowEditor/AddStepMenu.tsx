@@ -384,23 +384,23 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="add-step-dialog-title"
-      className="fixed inset-0 z-50 bg-[#10263E]/30 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-100"
+      className="fixed inset-0 z-50 bg-brand-navy/30 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-100"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl shadow-2xl border border-[#DDE4EB] max-w-xl w-full flex flex-col max-h-[85vh] overflow-hidden"
+        className="bg-white rounded-xl shadow-drawer border border-border-subtle max-w-xl w-full flex flex-col max-h-[85vh] overflow-hidden"
       >
         {/* Header with Search */}
-        <div className="p-4 border-b border-[#DDE4EB] bg-[#F6F8FB] space-y-3">
+        <div className="p-4 border-b border-border-subtle bg-workspace space-y-3">
           <div className="flex items-center justify-between">
-            <h2 id="add-step-dialog-title" className="text-sm font-bold text-[#192D42]">
+            <h2 id="add-step-dialog-title" className="text-sm font-bold text-text-primary">
               Add Step at Position {insertPosition}
             </h2>
             <button
               type="button"
               onClick={onClose}
-              className="p-1 rounded-md text-[#5B6C7D] hover:text-[#192D42] hover:bg-[#DDE4EB] transition-colors"
+              className="p-1 rounded-md text-text-secondary hover:text-text-primary hover:bg-border-subtle transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -408,20 +408,20 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
 
           {/* Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 text-[#5B6C7D] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-text-secondary absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               ref={searchInputRef}
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search steps (e.g., screening, interview, call, review)..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#DDE4EB] rounded-lg text-[#192D42] placeholder-[#5B6C7D] focus:outline-none focus:ring-2 focus:ring-[#245FAD]/30 focus:border-[#245FAD]"
+              className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-border-subtle rounded-lg text-text-primary placeholder-[#5B6C7D] focus:outline-none focus:ring-2 focus:ring-interactive-blue/30 focus:border-interactive-blue"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#5B6C7D] hover:text-[#192D42]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -435,8 +435,8 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
               onClick={() => setSelectedCategory('All')}
               className={`px-2.5 py-1 rounded-full font-medium shrink-0 transition-colors ${
                 selectedCategory === 'All'
-                  ? 'bg-[#245FAD] text-white'
-                  : 'bg-white text-[#5B6C7D] border border-[#DDE4EB] hover:bg-[#F6F8FB]'
+                  ? 'bg-interactive-blue text-white'
+                  : 'bg-white text-text-secondary border border-border-subtle hover:bg-workspace'
               }`}
             >
               All
@@ -448,8 +448,8 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-2.5 py-1 rounded-full font-medium shrink-0 transition-colors ${
                   selectedCategory === cat
-                    ? 'bg-[#245FAD] text-white'
-                    : 'bg-white text-[#5B6C7D] border border-[#DDE4EB] hover:bg-[#F6F8FB]'
+                    ? 'bg-interactive-blue text-white'
+                    : 'bg-white text-text-secondary border border-border-subtle hover:bg-workspace'
                 }`}
               >
                 {cat}
@@ -463,7 +463,7 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
           {/* Common Steps First (Only when no search and on 'All') */}
           {!searchTerm && selectedCategory === 'All' && (
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#5B6C7D] uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-text-secondary uppercase tracking-wider">
                 <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                 <span>Common Steps</span>
               </div>
@@ -478,16 +478,16 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
                         onSelectStep(item);
                         onClose();
                       }}
-                      className="p-2.5 rounded-lg border border-[#DDE4EB] hover:border-[#245FAD] hover:bg-blue-50/20 text-left transition-all flex items-start gap-2.5 group"
+                      className="p-2.5 rounded-lg border border-border-subtle hover:border-interactive-blue hover:bg-blue-50/20 text-left transition-all flex items-start gap-2.5 group"
                     >
-                      <div className="p-1.5 rounded-md bg-[#F6F8FB] border border-[#DDE4EB] text-[#245FAD] group-hover:bg-[#245FAD] group-hover:text-white transition-colors shrink-0">
+                      <div className="p-1.5 rounded-md bg-workspace border border-border-subtle text-interactive-blue group-hover:bg-interactive-blue group-hover:text-white transition-colors shrink-0">
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-bold text-[#192D42] group-hover:text-[#245FAD]">
+                        <div className="text-xs font-bold text-text-primary group-hover:text-interactive-blue">
                           {item.title}
                         </div>
-                        <div className="text-[11px] text-[#5B6C7D] line-clamp-1 mt-0.5">
+                        <div className="text-[11px] text-text-secondary line-clamp-1 mt-0.5">
                           {item.description}
                         </div>
                       </div>
@@ -505,7 +505,7 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
               if (catItems.length === 0) return null;
               return (
                 <div key={category} className="space-y-2">
-                  <div className="text-[11px] font-bold text-[#5B6C7D] uppercase tracking-wider">
+                  <div className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
                     {category}
                   </div>
                   <div className="space-y-1.5">
@@ -519,17 +519,17 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
                             onSelectStep(item);
                             onClose();
                           }}
-                          className="w-full p-2.5 rounded-lg border border-[#DDE4EB] hover:border-[#245FAD] hover:bg-[#F6F8FB] text-left transition-all flex items-start justify-between gap-3 group"
+                          className="w-full p-2.5 rounded-lg border border-border-subtle hover:border-interactive-blue hover:bg-workspace text-left transition-all flex items-start justify-between gap-3 group"
                         >
                           <div className="flex items-start gap-2.5 min-w-0">
-                            <div className="p-1.5 rounded-md bg-[#F6F8FB] border border-[#DDE4EB] text-[#245FAD] group-hover:bg-white transition-colors shrink-0">
+                            <div className="p-1.5 rounded-md bg-workspace border border-border-subtle text-interactive-blue group-hover:bg-white transition-colors shrink-0">
                               <Icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0">
-                              <div className="text-xs font-semibold text-[#192D42] group-hover:text-[#245FAD]">
+                              <div className="text-xs font-semibold text-text-primary group-hover:text-interactive-blue">
                                 {item.title}
                               </div>
-                              <div className="text-[11px] text-[#5B6C7D] mt-0.5 line-clamp-1">
+                              <div className="text-[11px] text-text-secondary mt-0.5 line-clamp-1">
                                 {item.description}
                               </div>
                             </div>
@@ -554,7 +554,7 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
           ) : (
             <div className="space-y-1.5">
               {filteredItems.length === 0 ? (
-                <div className="py-8 text-center text-xs text-[#5B6C7D]">
+                <div className="py-8 text-center text-xs text-text-secondary">
                   No steps found matching "{searchTerm}".
                 </div>
               ) : (
@@ -568,22 +568,22 @@ export const AddStepMenu: React.FC<AddStepMenuProps> = ({
                         onSelectStep(item);
                         onClose();
                       }}
-                      className="w-full p-2.5 rounded-lg border border-[#DDE4EB] hover:border-[#245FAD] hover:bg-[#F6F8FB] text-left transition-all flex items-start justify-between gap-3 group"
+                      className="w-full p-2.5 rounded-lg border border-border-subtle hover:border-interactive-blue hover:bg-workspace text-left transition-all flex items-start justify-between gap-3 group"
                     >
                       <div className="flex items-start gap-2.5 min-w-0">
-                        <div className="p-1.5 rounded-md bg-[#F6F8FB] border border-[#DDE4EB] text-[#245FAD] group-hover:bg-white transition-colors shrink-0">
+                        <div className="p-1.5 rounded-md bg-workspace border border-border-subtle text-interactive-blue group-hover:bg-white transition-colors shrink-0">
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-[#192D42] group-hover:text-[#245FAD]">
+                            <span className="text-xs font-semibold text-text-primary group-hover:text-interactive-blue">
                               {item.title}
                             </span>
-                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#F6F8FB] border border-[#DDE4EB] text-[#5B6C7D]">
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-workspace border border-border-subtle text-text-secondary">
                               {item.category}
                             </span>
                           </div>
-                          <div className="text-[11px] text-[#5B6C7D] mt-0.5 line-clamp-1">
+                          <div className="text-[11px] text-text-secondary mt-0.5 line-clamp-1">
                             {item.description}
                           </div>
                         </div>

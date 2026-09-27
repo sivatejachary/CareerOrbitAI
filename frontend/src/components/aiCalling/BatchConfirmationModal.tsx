@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 import React, { useState } from 'react';
 import {
   X,
@@ -31,6 +32,7 @@ export const BatchConfirmationModal: React.FC<BatchConfirmationModalProps> = ({
   eligibilityData,
   loading
 }) => {
+  const dialogRef = useDialogFocus(isOpen, onClose);
   const [maxConcurrent, setMaxConcurrent] = useState<number>(3);
   const [callDelay, setCallDelay] = useState<number>(10);
   const [maxAttempts, setMaxAttempts] = useState<number>(2);
@@ -51,26 +53,26 @@ export const BatchConfirmationModal: React.FC<BatchConfirmationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Confirm AI calling" tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white rounded-menu shadow-drawer border border-slate-200 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-900 to-indigo-950 text-white">
+        <div className="flex items-center justify-between px-6 py-5 bg-workspace text-text-primary">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-blue-500/20 border border-blue-400/30 rounded-xl backdrop-blur-md">
-              <Rocket className="w-6 h-6 text-blue-300" />
+              <Rocket className="w-6 h-6 text-text-secondary" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              <h2 className="text-lg font-bold tracking-tight text-text-primary flex items-center gap-2">
                 Start Automatic AI Calling
               </h2>
-              <p className="text-xs text-blue-200 mt-0.5">
-                Target Role: <span className="font-semibold text-white">{eligibilityData.job_title}</span>
+              <p className="text-xs text-text-secondary mt-0.5">
+                Target Role: <span className="font-semibold text-text-primary">{eligibilityData.job_title}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-blue-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -246,10 +248,10 @@ export const BatchConfirmationModal: React.FC<BatchConfirmationModalProps> = ({
             type="button"
             onClick={handleStart}
             disabled={loading || eligibleCount === 0}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="flex items-center gap-2 px-6 py-2.5 bg-interactive-blue hover:bg-nav-activeText text-surface rounded-xl text-xs font-bold  transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <Rocket className="w-4 h-4" />
-            <span>{loading ? 'Starting Batch...' : `🚀 Start Calling (${eligibleCount} Candidates)`}</span>
+            <span>{loading ? 'Starting Batch...' : `Start Calling (${eligibleCount} Candidates)`}</span>
           </button>
         </div>
       </div>

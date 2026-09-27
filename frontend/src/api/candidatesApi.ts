@@ -8,6 +8,7 @@ export async function fetchCandidates(params?: {
   min_experience?: number;
   page?: number;
   page_size?: number;
+  sort?: string;
 }): Promise<{ items: Candidate[]; total: number; page: number; total_pages: number }> {
   const query = new URLSearchParams();
   if (params?.search) query.append('search', params.search);
@@ -16,6 +17,7 @@ export async function fetchCandidates(params?: {
   if (params?.page) query.append('page', params.page.toString());
   if (params?.page_size) query.append('page_size', params.page_size.toString());
 
+  if (params?.sort) query.append('sort', params.sort);
   const res = await fetch(`${API_BASE}/candidates?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch candidates');
   return res.json();
@@ -34,6 +36,7 @@ export async function fetchApplications(params?: {
   search?: string;
   page?: number;
   page_size?: number;
+  sort?: string;
 }): Promise<{ items: JobApplicationItem[]; total: number; page: number; total_pages: number }> {
   const query = new URLSearchParams();
   if (params?.job_id) query.append('job_id', params.job_id);
@@ -43,6 +46,7 @@ export async function fetchApplications(params?: {
   if (params?.page) query.append('page', params.page.toString());
   if (params?.page_size) query.append('page_size', params.page_size.toString());
 
+  if (params?.sort) query.append('sort', params.sort);
   const res = await fetch(`${API_BASE}/applications?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch applications');
   return res.json();

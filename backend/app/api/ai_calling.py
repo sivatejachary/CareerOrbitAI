@@ -21,6 +21,7 @@ Existing endpoints (preserved):
 """
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -90,6 +91,8 @@ def list_call_attempts(
     job_id: Optional[str] = Query(None),
     candidate_id: Optional[str] = Query(None),
     status_filter: Optional[str] = Query(None),
+    category: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
     batch_id: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
@@ -108,6 +111,16 @@ def list_call_attempts(
     if batch_id:
         query = query.filter(CallAttempt.batch_id == batch_id)
 
+    if search:
+        query = query.join(Candidate, Candidate.id == CallAttempt.candidate_id).filter(or_(Candidate.full_name.ilike(f"%{search}%"), CallAttempt.phone_number.ilike(f"%{search}%")))
+    if category == 'Scheduled':
+        query = query.filter(CallAttempt.operation_state == 'Scheduled')
+    elif category == 'Active':
+        query = query.filter(CallAttempt.connection_state.in_(['Ringing', 'Connected']), CallAttempt.ended_at.is_(None))
+    elif category == 'Needs Attention':
+        query = query.filter(or_(CallAttempt.operation_state == 'Failed', CallAttempt.processing_state == 'NeedsReview'))
+    elif category == 'Completed':
+        query = query.filter(CallAttempt.disposition == 'ConversationCompleted')
     total = query.count()
     items = query.order_by(CallAttempt.created_at.desc()).offset((page - 1) * size).limit(size).all()
 

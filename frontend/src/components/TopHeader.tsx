@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Menu, ChevronRight } from 'lucide-react';
-import { NotificationButton } from './NotificationButton';
 import { UserMenu } from './UserMenu';
 
 interface TopHeaderProps {
@@ -21,9 +20,9 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   const isWorkflowEditor = location.pathname.startsWith('/workflow/') && !location.pathname.includes('/executions/');
 
   return (
-    <header className="h-[60px] md:h-[68px] bg-surface border-b border-border-subtle px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 select-none">
+    <header className="h-[60px] bg-surface border-b border-border-subtle px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 select-none">
       {/* Left side: Hamburger Trigger (Mobile) & Breadcrumbs or H1 Page Title */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <button
           ref={mobileMenuTriggerRef}
           type="button"
@@ -39,10 +38,10 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         {isWorkflowEditor ? (
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs md:text-sm text-text-secondary">
             <Link
-              to="/jobs"
+              to="/dashboard"
               className="hover:text-text-primary transition-colors hover:underline"
             >
-              Jobs
+              Workspace
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-text-muted shrink-0" />
             <Link
@@ -57,15 +56,14 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
             </span>
           </nav>
         ) : (
-          <h1 className="text-[18px] md:text-[20px] font-semibold text-text-primary tracking-tight leading-tight">
+          <div className="text-sm font-semibold text-text-primary tracking-tight leading-tight">
             {title}
-          </h1>
+          </div>
         )}
       </div>
 
       {/* Right side: Notifications & User Menu */}
       <div className="flex items-center gap-1 md:gap-2">
-        <NotificationButton />
         <UserMenu />
       </div>
     </header>

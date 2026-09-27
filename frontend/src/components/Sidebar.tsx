@@ -1,88 +1,19 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Brand } from './Brand';
 import { SidebarItem } from './SidebarItem';
 import { MAIN_NAVIGATION_ITEMS, ADMIN_NAVIGATION_ITEMS } from '../config/navigation';
 
-interface SidebarProps {
-  collapsed?: boolean; // True for tablet rail (80px)
-  className?: string;
-  onNavigate?: () => void;
+interface SidebarProps { collapsed?: boolean; className?: string; onNavigate?: () => void; }
+const groups = [
+  { label: 'Workspace', ids: ['dashboard'] },
+  { label: 'Hiring', ids: ['jobs', 'candidates', 'interviews'] },
+  { label: 'Automation', ids: ['workflow', 'ai-calling', 'ai-interviews'] },
+];
+export function Sidebar({ collapsed = false, className = '', onNavigate }: SidebarProps) {
+  const { pathname } = useLocation();
+  return <aside className={`bg-sidebar border-r border-border-subtle flex flex-col h-full ${collapsed ? 'w-[80px] px-2' : 'w-[240px] px-3'} py-5 ${className}`} aria-label="Sidebar navigation">
+    <div className={`flex items-center mb-8 ${collapsed ? 'justify-center' : 'px-2'}`}><Brand collapsed={collapsed} onClick={onNavigate} /></div>
+    <nav aria-label="Main navigation" className="flex-1 overflow-y-auto space-y-6 custom-scrollbar">{groups.map(group => <div key={group.label}>{!collapsed && <h2 className="px-3 mb-2 text-[11px] font-semibold text-text-secondary tracking-wider uppercase">{group.label}</h2>}<ul className="space-y-1">{group.ids.map(id => MAIN_NAVIGATION_ITEMS.find(item => item.id === id)!).map(item => <li key={item.id}><SidebarItem item={item} isActive={pathname === item.path || pathname.startsWith(`${item.path}/`)} collapsed={collapsed} onClick={onNavigate} /></li>)}</ul></div>)}</nav>
+    <nav aria-label="Workspace settings" className="border-t border-border-subtle mt-6 pt-4"><ul>{ADMIN_NAVIGATION_ITEMS.map(item => <li key={item.id}><SidebarItem item={item} isActive={pathname.startsWith(item.path)} collapsed={collapsed} onClick={onNavigate} /></li>)}</ul></nav>
+  </aside>;
 }
-
-export const Sidebar: React.FC<SidebarProps> = ({
-  collapsed = false,
-  className = '',
-  onNavigate,
-}) => {
-  const location = useLocation();
-
-  return (
-    <aside
-      className={`
-        bg-sidebar border-r border-border-subtle flex flex-col h-full select-none
-        ${collapsed ? 'w-[80px] items-center px-2 py-5' : 'w-[256px] px-4 py-5'}
-        ${className}
-      `}
-      aria-label="Sidebar Navigation"
-    >
-      {/* Brand Header */}
-      <div className={`flex items-center mb-6 ${collapsed ? 'justify-center w-full' : 'px-2'}`}>
-        <Brand collapsed={collapsed} onClick={onNavigate} />
-      </div>
-
-      {/* Nav scroll container ensuring reachable admin section on short viewports */}
-      <div className="flex-1 flex flex-col justify-between overflow-y-auto custom-scrollbar w-full">
-        {/* Main Navigation Group */}
-        <nav aria-label="Main Navigation" className="w-full">
-          <ul className="space-y-1 w-full list-none p-0 m-0">
-            {MAIN_NAVIGATION_ITEMS.map((item) => {
-              const isActive = item.path === '/dashboard'
-                ? location.pathname === '/dashboard'
-                : location.pathname.startsWith(item.path);
-
-              return (
-                <li key={item.id} className={collapsed ? 'flex justify-center my-1' : ''}>
-                  <SidebarItem
-                    item={item}
-                    isActive={isActive}
-                    collapsed={collapsed}
-                    onClick={onNavigate}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        {/* Administration Group */}
-        <div className="pt-6 mt-6 border-t border-border-subtle w-full">
-          {!collapsed ? (
-            <h2 className="px-3 text-[12px] font-medium text-text-secondary uppercase tracking-wider mb-2 select-none">
-              Administration
-            </h2>
-          ) : (
-            <div className="h-4" aria-hidden="true" />
-          )}
-          <nav aria-label="Administration Navigation" className="w-full">
-            <ul className="space-y-1 w-full list-none p-0 m-0">
-              {ADMIN_NAVIGATION_ITEMS.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <li key={item.id} className={collapsed ? 'flex justify-center my-1' : ''}>
-                    <SidebarItem
-                      item={item}
-                      isActive={isActive}
-                      collapsed={collapsed}
-                      onClick={onNavigate}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </aside>
-  );
-};
